@@ -18,7 +18,7 @@ fn read_calories() -> IOResult<BinaryHeap<Calories>> {
                 total_cals.push(curr_cals);
                 curr_cals = 0;
             }
-            cals => curr_cals += cals.parse::<u64>().expect("Calories are valid"),
+            cals => curr_cals += cals.parse::<Calories>().expect("Calories are valid"),
         }
     }
 
@@ -40,5 +40,6 @@ fn main() -> IOResult<()> {
         "Task 2: {}",
         calories_carried_by_top_3_elves(&mut total_cals)
     );
+
     Ok(())
 }

@@ -3,10 +3,10 @@ open Core
 let rec parse_calories cs =
   match cs with
   | [] -> [ 0 ]
-  | "" :: cs' -> 0 :: parse_calories cs'
-  | c :: cs' ->
-      let xs = parse_calories cs' in
-      (List.hd_exn xs + int_of_string c) :: List.tl_exn xs
+  | "" :: rest -> 0 :: parse_calories rest
+  | cals :: rest ->
+      let rest = parse_calories rest in
+      (List.hd_exn rest + int_of_string cals) :: List.tl_exn rest
 
 let input =
   In_channel.read_lines "../inputs/day1.txt"
