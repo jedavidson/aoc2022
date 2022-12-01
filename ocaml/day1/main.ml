@@ -14,7 +14,7 @@ let read_calories =
   |> List.sort ~compare:Int.compare
   |> List.rev
 
-let most_calories_carried total_cals = List.hd_exn total_cals
+let most_calories_carried = List.hd_exn
 
 let calories_carried_by_top_3_elves total_cals =
   List.take total_cals 3 |> List.fold ~init:0 ~f:Int.( + )
