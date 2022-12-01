@@ -16,7 +16,7 @@ let read_calories =
 
 let most_calories_carried total_cals = List.hd_exn total_cals
 
-let calories_carried_by_top_3_elves (total_cals : int list) =
+let calories_carried_by_top_3_elves total_cals =
   List.take total_cals 3 |> List.fold ~init:0 ~f:Int.( + )
 
 let () =
