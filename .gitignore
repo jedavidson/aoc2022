@@ -1,2 +1,8 @@
+# Build files and other unwanted cruft
 **/target
+**/_build
+**/lib
+**/test
+
+# Data sources for each task
 inputs/
