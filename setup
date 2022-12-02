@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Setup Rust
+cd rust
+cargo new "day$1" > /dev/null
+cp ../templates/rust_main.rs "day$1/src/main.rs"
+sed -i "s/X/$1/" "day$1/src/main.rs"
+sed -i "$ i\    \"day$1\"," Cargo.toml
+echo "Created Rust crate for day $1"
+
+# Setup OCaml
+cd ../ocaml
+mkdir "day$1"
+cp ../templates/ocaml_dune "day$1/dune"
+sed -i "s/X/$1/" "day$1/dune"
+cp ../templates/ocaml_main.ml "day$1/main.ml"
+sed -i "s/X/$1/" "day$1/main.ml"
+echo "Created OCaml executable for day $1"
