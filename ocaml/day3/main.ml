@@ -7,23 +7,17 @@ let get_priority item =
   | 'A' .. 'Z' -> 27 + Char.to_int item - Char.to_int 'A'
   | _ -> failwith "Bad item type"
 
-let as_char_set r =
-  List.fold (String.to_list r) ~init:CharSet.empty ~f:CharSet.add
+let as_char_set = Fn.compose CharSet.of_list String.to_list
+
+let common_item rucksacks =
+  CharSet.choose_exn @@ List.reduce_exn rucksacks ~f:CharSet.inter
 
 let get_common_in_compartments rs =
   let l = String.length rs in
-  let fst_comp, snd_comp =
-    ( as_char_set @@ String.slice rs 0 (l / 2),
-      as_char_set @@ String.slice rs (l / 2) l )
-  in
-  CharSet.choose_exn @@ CharSet.inter fst_comp snd_comp
+  common_item @@ List.map ~f:as_char_set
+  @@ [ String.slice rs 0 (l / 2); String.slice rs (l / 2) l ]
 
-let get_badge group =
-  CharSet.choose_exn
-  @@
-  match List.map group ~f:as_char_set with
-  | fst :: snd :: thd :: _ -> CharSet.inter (CharSet.inter fst snd) thd
-  | _ -> failwith "Not enough elves in group"
+let get_badge group = common_item @@ List.map group ~f:as_char_set
 
 let sum_common_item_priorities rucksacks =
   List.map rucksacks ~f:get_common_in_compartments
