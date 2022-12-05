@@ -23,13 +23,7 @@ fn read_input() -> IOResult<(Vec<CrateStack>, Vec<Instruction>)> {
         .expect("Missing stack numbers");
 
     let mut crate_stacks = vec![vec![]; num_stacks];
-    for line in lines
-        .iter()
-        .enumerate()
-        .filter(|(idx, line)| *idx == 0 || line.starts_with('['))
-        .map(|(_, line)| line)
-        .rev()
-    {
+    for line in lines.iter().filter(|line| line.contains('[')).rev() {
         for stack_no in 0..num_stacks {
             let Some(crate_label) = line.chars().nth(1 + 4 * stack_no) else {
                 continue
