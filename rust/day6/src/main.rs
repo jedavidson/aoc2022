@@ -3,22 +3,36 @@ use std::io::{BufRead, BufReader, Result as IOResult};
 
 const INPUT_PATH: &str = "../inputs/day6.txt";
 
-fn read_input() -> IOResult<()> {
-    BufReader::new(File::open(INPUT_PATH)?).lines();
-    Ok(())
+const START_OF_PACKET_MARKER_SIZE: usize = 4;
+const START_OF_MESSAGE_MARKER_SIZE: usize = 14;
+
+fn read_datastream() -> IOResult<String> {
+    Ok(BufReader::new(File::open(INPUT_PATH)?)
+        .lines()
+        .flat_map(|line| line)
+        .next()
+        .expect("Input must contain a line"))
 }
 
-fn task1() {
-    // ...
-}
-
-fn task2() {
-    // ...
+fn first_marker_pos(datastream: &str, marker_size: usize) -> usize {
+    let (pos, _) = datastream
+        .as_bytes()
+        .windows(marker_size)
+        .enumerate()
+        .find(|(_, window)| !(1..marker_size).any(|i| window[i..].contains(&window[i - 1])))
+        .expect("There's an answer to this problem ... right?");
+    pos + marker_size
 }
 
 fn main() -> IOResult<()> {
-    let _ = read_input()?;
-    println!("Task 1: {:?}", task1());
-    println!("Task 2: {:?}", task2());
+    let datastream = read_datastream()?;
+    println!(
+        "Task 1: {}",
+        first_marker_pos(&datastream, START_OF_PACKET_MARKER_SIZE)
+    );
+    println!(
+        "Task 2: {}",
+        first_marker_pos(&datastream, START_OF_MESSAGE_MARKER_SIZE)
+    );
     Ok(())
 }
