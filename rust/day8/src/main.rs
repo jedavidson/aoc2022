@@ -71,10 +71,10 @@ fn max_scenic_score(forest: &Forest) -> ScenicScore {
         .reduce(|row_max, row| {
             (0..width)
                 .reduce(|col_max, col| scenic_score(forest, (row, col)).max(col_max))
-                .expect("uhh")
+                .expect("Column has a maximal scenic score")
                 .max(row_max)
         })
-        .expect("uhh")
+        .expect("Forest has a maximal scenic score")
 }
 
 fn main() -> IOResult<()> {
