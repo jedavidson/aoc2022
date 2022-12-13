@@ -8,8 +8,8 @@ let size (Dir (_, size, _)) = size
 
 let rec touch file_size cwd (Dir (name, size, children) as dir) =
   match cwd with
-  | basename :: rest when String.( = ) basename name ->
-      let children' = List.map ~f:(touch file_size rest) children in
+  | basename :: cwd' when String.( = ) basename name ->
+      let children' = List.map ~f:(touch file_size cwd') children in
       Dir (name, size + file_size, children')
   | _ -> dir
 
@@ -22,6 +22,8 @@ let rec mkdir new_dir cwd (Dir (name, size, children) as dir) =
     Dir (name, size, children')
   else dir
 
-let rec fold init (Dir (_, _, children) as dir) ~f =
-  let init' = List.fold ~init ~f:(fold ~f) children in
-  f init' dir
+let fold fs ~init ~f =
+  let rec fold' acc (Dir (_, _, children) as dir) =
+    f (List.fold ~init:acc ~f:fold' children) dir
+  in
+  fold' init fs

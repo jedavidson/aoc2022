@@ -18,7 +18,7 @@ let root =
 
 let total_dir_size_under_100k =
   let f sum (Fs.Dir (_, size, _)) = if size <= 100_000 then sum + size else sum in
-  Fs.fold 0 root ~f
+  Fs.fold root ~init:0 ~f
 
 let size_of_smallest_viable_dir =
   let root_size = Fs.size root in
@@ -26,7 +26,7 @@ let size_of_smallest_viable_dir =
   let f min (Fs.Dir (_, size, _)) =
     if space + size >= 30_000_000 then Int.min min size else min
   in
-  Fs.fold root_size root ~f
+  Fs.fold root ~init:root_size ~f
 
 let () =
   printf "Task 1: %d\n" @@ total_dir_size_under_100k;
