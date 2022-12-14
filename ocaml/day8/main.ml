@@ -3,7 +3,6 @@ open Core
 let ( << ) = Fn.compose
 let ( --> ) = List.range
 let ( <-- ) a b = List.rev (a --> b)
-let max l ~compare = Option.value_exn @@ List.max_elt ~compare l
 
 let trees =
   In_channel.read_lines "../inputs/day8.txt"
@@ -13,10 +12,12 @@ let h, w = (Array.length trees, Array.length trees.(0))
 
 let is_visible r c =
   let f c' = trees.(r).(c') < trees.(r).(c) in
-  let horizontally = List.for_all (0 --> c) ~f || List.for_all (c + 1 --> w) ~f in
+  let from_left = List.for_all (0 --> c) ~f in
+  let from_right = List.for_all (c + 1 --> w) ~f in
   let f r' = trees.(r').(c) < trees.(r).(c) in
-  let vertically = List.for_all (0 --> r) ~f || List.for_all (r + 1 --> h) ~f in
-  horizontally || vertically
+  let from_above = List.for_all (0 --> r) ~f in
+  let from_below = List.for_all (r + 1 --> h) ~f in
+  from_left || from_right || from_above || from_below
 
 let scenic_score r c =
   let f c' = trees.(r).(c') >= trees.(r).(c) in
@@ -32,8 +33,9 @@ let num_visible_trees =
   List.sum (module Int) (0 --> h) ~f
 
 let max_scenic_score =
-  let f r = max (List.map (0 --> w) ~f:(scenic_score r)) ~compare:Int.compare in
-  max (List.map (0 --> h) ~f) ~compare:Int.compare
+  let max l = Option.value_exn @@ List.max_elt ~compare:Int.compare l in
+  let f r = max (List.map (0 --> w) ~f:(scenic_score r)) in
+  max (List.map (0 --> h) ~f)
 
 let () =
   printf "Task 1: %d\n" @@ num_visible_trees;
